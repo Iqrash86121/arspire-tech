@@ -14,7 +14,7 @@ export const COMPANY = {
 // TODO: replace these placeholders with your real details.
 export const CONTACT = {
   email: "hello@arspiretech.com",
-  phone: "+92 300 0000000",
+  phone: "+92 3284771442",
   city: "Lahore",
   country: "Pakistan",
   address: "Lahore, Punjab, Pakistan",
