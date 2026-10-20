@@ -32,10 +32,10 @@ export const NAV = [
 ];
 
 export const STATS = [
-  { value: 3, suffix: "+", label: "Projects delivered" },
-  { value: 12, suffix: "+", label: "Technologies used" },
+  { value: 8, suffix: "+", label: "Projects built" },
+  { value: 15, suffix: "+", label: "Technologies used" },
   { value: 3, suffix: "", label: "Platforms: Web, Mobile, API" },
-  { value: 100, suffix: "%", label: "Commitment to quality" },
+  { value: 1, suffix: "", label: "npm package published" },
 ];
 
 export const SERVICES = [
@@ -47,7 +47,7 @@ export const SERVICES = [
   {
     icon: "Smartphone",
     title: "Mobile Apps",
-    text: "Cross-platform Android and iOS apps with React Native that feel truly native.",
+    text: "Cross-platform Android and iOS apps with React Native, plus fixes for failing builds, store rejections and outdated apps.",
   },
   {
     icon: "Server",
@@ -71,8 +71,18 @@ export const SERVICES = [
   },
 ];
 
+// group: "client" | "mobile" | "tools" (used by the filter tabs on the Projects section)
+// metrics: up to 3 short facts shown as a strip on the card
+export const PROJECT_FILTERS = [
+  { id: "all", label: "All work" },
+  { id: "client", label: "Client work" },
+  { id: "mobile", label: "Mobile apps" },
+  { id: "tools", label: "Developer tools" },
+];
+
 export const PROJECTS = [
   {
+    group: "client",
     icon: "Landmark",
     category: "Corporate Website",
     title: "HVB Outsourcing",
@@ -82,6 +92,7 @@ export const PROJECTS = [
     gradient: "linear-gradient(135deg,#0f4a2c 0%,#1f7a4a 100%)",
   },
   {
+    group: "client",
     icon: "Plane",
     category: "Ledger System",
     title: "Friendly Travel & Tours Ledger",
@@ -91,6 +102,7 @@ export const PROJECTS = [
     gradient: "linear-gradient(135deg,#8a6a1f 0%,#c89b3c 100%)",
   },
   {
+    group: "client",
     icon: "GraduationCap",
     category: "Management System",
     title: "City College Management System",
@@ -98,6 +110,108 @@ export const PROJECTS = [
     tags: ["Dashboard", "Students", "Admin Panel"],
     link: null,
     gradient: "linear-gradient(135deg,#0b3a22 0%,#c89b3c 140%)",
+  },
+  {
+    group: "mobile",
+    icon: "Car",
+    category: "Ride-hailing App · iOS & Android",
+    title: "Raah-e-Haq",
+    text: "A ride-hailing app for Pakistan with separate passenger and driver experiences in one codebase: Google Maps booking with stops, fare estimates in PKR, phone OTP login and driver document uploads.",
+    metrics: [
+      { label: "Roles", value: "Passenger + Driver" },
+      { label: "Stops per ride", value: "Up to 5" },
+      { label: "Status", value: "In development" },
+    ],
+    tags: ["React Native", "TypeScript", "Google Maps", "REST API"],
+    link: null,
+    github: "https://github.com/AttayR/Raah-e-Haq",
+    gradient: "linear-gradient(135deg,#0b3a22 0%,#1f7a4a 100%)",
+  },
+  {
+    group: "mobile",
+    icon: "ShieldCheck",
+    category: "Encrypted Vault · iOS & Android",
+    title: "AR Vault",
+    text: "A private vault for photos, videos and documents. Every file is encrypted on the device, the key is locked by a PIN, and Face ID or fingerprint can unlock it.",
+    metrics: [
+      { label: "Encryption", value: "AES-256-GCM" },
+      { label: "PIN key", value: "Argon2id" },
+      { label: "Unlock", value: "PIN · Biometrics" },
+    ],
+    tags: ["Expo", "Expo Router", "TypeScript", "Secure Store"],
+    link: null,
+    github: "https://github.com/AttayR/SecureApp",
+    gradient: "linear-gradient(135deg,#12231a 0%,#8a6a1f 120%)",
+  },
+  {
+    group: "mobile",
+    icon: "Bird",
+    category: "On-device AI App",
+    title: "Trail Notebook",
+    text: "Identifies a bird from its song and writes a journal note, fully offline. BirdNET and the Gemma 3 1B language model both run on the phone. Built for DEV Hacktoberfest 2026.",
+    metrics: [
+      { label: "Tap to species", value: "282 ms" },
+      { label: "On-device LLM", value: "39 tok/s" },
+      { label: "Unit tests", value: "82" },
+    ],
+    tags: ["Expo SDK 57", "New Architecture", "llama.rn", "TFLite"],
+    link: null,
+    github: "https://github.com/AttayR/trail-notebook",
+    gradient: "linear-gradient(135deg,#166039 0%,#e0b862 140%)",
+  },
+  {
+    group: "tools",
+    icon: "Terminal",
+    category: "Developer Tool · npm",
+    title: "expo-preflight",
+    text: "A command-line checker that finds the problems behind failed Expo builds and App Store or Play Store rejections, and shows the exact fix, before you run eas build.",
+    metrics: [
+      { label: "Install", value: "npx expo-preflight" },
+      { label: "Checks", value: "iOS · Android · EAS" },
+      { label: "Runs in", value: "CI or locally" },
+    ],
+    tags: ["TypeScript", "Node.js CLI", "Expo", "EAS"],
+    link: "https://www.npmjs.com/package/expo-preflight",
+    github: "https://github.com/AttayR/expo-preflight",
+    gradient: "linear-gradient(135deg,#072a18 0%,#0f4a2c 100%)",
+  },
+  {
+    group: "tools",
+    icon: "Layers",
+    category: "Production Starter",
+    title: "Expo Router Redux Starter",
+    text: "The base we start client apps from: login with automatic token refresh, protected routes, dark mode, translations, tests and CI already set up.",
+    metrics: [
+      { label: "Auth", value: "Token refresh" },
+      { label: "Languages", value: "EN · ES" },
+      { label: "Quality", value: "Strict TS · CI" },
+    ],
+    tags: ["Expo Router", "Redux Toolkit", "RTK Query", "GitHub Actions"],
+    link: null,
+    github: "https://github.com/AttayR/expo-router-redux-starter",
+    gradient: "linear-gradient(135deg,#8a6a1f 0%,#0f4a2c 120%)",
+  },
+];
+
+// Pull requests to libraries other React Native teams depend on.
+export const OPEN_SOURCE = [
+  {
+    status: "Merged",
+    repo: "margelo/react-native-quick-crypto",
+    text: "Added a Jest mock backed by node:crypto, so apps using the library can run unit tests without native code.",
+    link: "https://github.com/margelo/react-native-quick-crypto/pull/1076",
+  },
+  {
+    status: "In review",
+    repo: "software-mansion/react-native-screens",
+    text: "An iOS 26 fix that keeps custom header items sized correctly while a screen is popped from the stack.",
+    link: "https://github.com/software-mansion/react-native-screens/pull/4784",
+  },
+  {
+    status: "Published",
+    repo: "expo-preflight on npm",
+    text: "Our own open-source CLI that catches Expo build and store-review problems before they cost a release.",
+    link: "https://www.npmjs.com/package/expo-preflight",
   },
 ];
 
@@ -111,6 +225,8 @@ export const PROCESS = [
 export const TECH = [
   "React",
   "React Native",
+  "Expo",
+  "TypeScript",
   "Node.js",
   "Express",
   "MongoDB",
@@ -119,6 +235,7 @@ export const TECH = [
   "Redux",
   "Zustand",
   "React Query",
+  "Google Maps",
   "Git",
   "REST APIs",
 ];
