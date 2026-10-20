@@ -1,8 +1,10 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { PROJECTS } from "../data";
+import { OPEN_SOURCE, PROJECT_FILTERS, PROJECTS } from "../data";
 import Reveal, { SectionHead } from "./Reveal";
 import Icon from "./Icon";
+
+const STATUS_ICON = { Merged: "GitMerge", "In review": "GitPullRequest", Published: "Package" };
 
 function ProjectCard({ p, index }) {
   const ref = useRef(null);
@@ -21,11 +23,12 @@ function ProjectCard({ p, index }) {
     my.set(0);
   };
 
-  const Wrapper = p.link ? "a" : "div";
-  const wrapProps = p.link ? { href: p.link, target: "_blank", rel: "noreferrer" } : {};
-
   return (
-    <Reveal delay={0.12 * index}>
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45, delay: 0.06 * index, ease: [0.22, 1, 0.36, 1] }}
+    >
       <motion.div
         ref={ref}
         className="project"
@@ -33,7 +36,7 @@ function ProjectCard({ p, index }) {
         onMouseLeave={onLeave}
         style={{ rotateX: rx, rotateY: ry, transformPerspective: 900 }}
       >
-        <Wrapper className="project-link" {...wrapProps}>
+        <div className="project-link">
           <div className="project-visual" style={{ background: p.gradient }}>
             <div className="mock">
               <i /><i /><i />
@@ -51,36 +54,101 @@ function ProjectCard({ p, index }) {
           </div>
           <div className="project-body">
             <span className="project-cat">{p.category}</span>
-            <h3>
-              {p.title}
-              {p.link && <Icon name="ArrowUpRight" size={20} className="out" />}
-            </h3>
+            <h3>{p.title}</h3>
             <p>{p.text}</p>
+            {p.metrics && (
+              <dl className="metrics">
+                {p.metrics.map((m) => (
+                  <div key={m.label}>
+                    <dt>{m.label}</dt>
+                    <dd>{m.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
             <div className="tags">
               {p.tags.map((t) => (
                 <span key={t}>{t}</span>
               ))}
             </div>
+            {(p.link || p.github) && (
+              <div className="project-actions">
+                {p.link && (
+                  <a href={p.link} target="_blank" rel="noreferrer">
+                    {p.group === "client" ? "Visit website" : "View live"} <Icon name="ArrowUpRight" size={16} />
+                  </a>
+                )}
+                {p.github && (
+                  <a href={p.github} target="_blank" rel="noreferrer">
+                    <Icon name="Github" size={16} /> Source code
+                  </a>
+                )}
+              </div>
+            )}
           </div>
-        </Wrapper>
+        </div>
       </motion.div>
-    </Reveal>
+    </motion.div>
   );
 }
 
 export default function Projects() {
+  const [filter, setFilter] = useState("all");
+  const shown = filter === "all" ? PROJECTS : PROJECTS.filter((p) => p.group === filter);
+
   return (
     <section id="projects" className="section">
       <div className="container">
         <SectionHead
           eyebrow="Our work"
           title="Projects we are proud of"
-          text="A selection of products we have designed and built for real businesses and institutions."
+          text="Websites and business systems for real clients, plus mobile apps and developer tools we built and open-sourced."
         />
-        <div className="cards-3 projects">
-          {PROJECTS.map((p, i) => (
+
+        <Reveal className="filters" y={16}>
+          <div role="tablist" aria-label="Filter projects">
+            {PROJECT_FILTERS.map((f) => (
+              <button
+                key={f.id}
+                role="tab"
+                aria-selected={filter === f.id}
+                className={filter === f.id ? "active" : ""}
+                onClick={() => setFilter(f.id)}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
+        </Reveal>
+
+        {/* key={filter} remounts the grid so the cards animate in again on each tab change */}
+        <div key={filter} className="cards-3 projects">
+          {shown.map((p, i) => (
             <ProjectCard key={p.title} p={p} index={i} />
           ))}
+        </div>
+
+        <div className="oss">
+          <Reveal className="oss-head" y={16}>
+            <h3>Open-source contributions</h3>
+            <p>Our code is part of libraries that React Native teams around the world use.</p>
+          </Reveal>
+          <div className="cards-3">
+            {OPEN_SOURCE.map((o, i) => (
+              <Reveal key={o.repo} delay={0.1 * i}>
+                <a className="oss-card" href={o.link} target="_blank" rel="noreferrer">
+                  <span className={`oss-status ${o.status === "In review" ? "wip" : ""}`}>
+                    <Icon name={STATUS_ICON[o.status]} size={14} /> {o.status}
+                  </span>
+                  <h4>{o.repo}</h4>
+                  <p>{o.text}</p>
+                  <span className="oss-more">
+                    View on {o.link.includes("npmjs") ? "npm" : "GitHub"} <Icon name="ArrowUpRight" size={15} />
+                  </span>
+                </a>
+              </Reveal>
+            ))}
+          </div>
         </div>
       </div>
     </section>
