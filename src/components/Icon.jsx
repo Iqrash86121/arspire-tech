@@ -2,14 +2,16 @@ import {
   Globe, Smartphone, Server, Briefcase, Palette, LifeBuoy, Landmark, Plane,
   GraduationCap, MessagesSquare, PenTool, Code2, Rocket, Lightbulb, Hammer,
   TrendingUp, Mail, Phone, MapPin, Clock, ArrowUpRight, ArrowRight, Menu, X, Send,
-  Car, ShieldCheck, Bird, Terminal, Layers, Github, GitMerge, GitPullRequest, Package,
+  Car, ShieldCheck, Bird, Terminal, Layers, Github, ExternalLink, GitPullRequest,
+  GitMerge, Package,
 } from "lucide-react";
 
 const MAP = {
   Globe, Smartphone, Server, Briefcase, Palette, LifeBuoy, Landmark, Plane,
   GraduationCap, MessagesSquare, PenTool, Code2, Rocket, Lightbulb, Hammer,
   TrendingUp, Mail, Phone, MapPin, Clock, ArrowUpRight, ArrowRight, Menu, X, Send,
-  Car, ShieldCheck, Bird, Terminal, Layers, Github, GitMerge, GitPullRequest, Package,
+  Car, ShieldCheck, Bird, Terminal, Layers, Github, ExternalLink, GitPullRequest,
+  GitMerge, Package,
 };
 
 export default function Icon({ name, size = 24, ...rest }) {

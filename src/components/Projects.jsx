@@ -1,17 +1,15 @@
 import { useRef, useState } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { OPEN_SOURCE, PROJECT_FILTERS, PROJECTS } from "../data";
+import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { PROJECTS, PROJECT_FILTERS, OPEN_SOURCE } from "../data";
 import Reveal, { SectionHead } from "./Reveal";
 import Icon from "./Icon";
 
-const STATUS_ICON = { Merged: "GitMerge", "In review": "GitPullRequest", Published: "Package" };
-
-function ProjectCard({ p, index }) {
+function ProjectCard({ p }) {
   const ref = useRef(null);
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
-  const rx = useSpring(useTransform(my, [-0.5, 0.5], [7, -7]), { stiffness: 200, damping: 18 });
-  const ry = useSpring(useTransform(mx, [-0.5, 0.5], [-7, 7]), { stiffness: 200, damping: 18 });
+  const rx = useSpring(useTransform(my, [-0.5, 0.5], [6, -6]), { stiffness: 200, damping: 18 });
+  const ry = useSpring(useTransform(mx, [-0.5, 0.5], [-6, 6]), { stiffness: 200, damping: 18 });
 
   const onMove = (e) => {
     const r = ref.current.getBoundingClientRect();
@@ -23,78 +21,101 @@ function ProjectCard({ p, index }) {
     my.set(0);
   };
 
+  const isNpm = p.link && p.link.includes("npmjs.com");
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.45, delay: 0.06 * index, ease: [0.22, 1, 0.36, 1] }}
+      layout
+      className="project-wrap"
+      initial={{ opacity: 0, y: 30, scale: 0.96 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.94 }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
     >
-      <motion.div
+      <motion.article
         ref={ref}
         className="project"
         onMouseMove={onMove}
         onMouseLeave={onLeave}
         style={{ rotateX: rx, rotateY: ry, transformPerspective: 900 }}
       >
-        <div className="project-link">
-          <div className="project-visual" style={{ background: p.gradient }}>
-            <div className="mock">
-              <i /><i /><i />
-              <div className="mock-lines">
-                <b /><b /><b />
+        <div className={`project-visual ${p.video || p.image ? "has-media" : ""}`} style={{ background: p.gradient }}>
+          {p.video ? (
+            <video
+              className="project-media"
+              src={p.video}
+              poster={p.image}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+            />
+          ) : p.image ? (
+            <img className="project-media" src={p.image} alt={`${p.title} screenshot`} loading="lazy" />
+          ) : (
+            <>
+              <div className="mock">
+                <i /><i /><i />
+                <div className="mock-lines"><b /><b /><b /></div>
               </div>
-            </div>
-            <motion.span
-              className="project-icon"
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <Icon name={p.icon} size={44} />
-            </motion.span>
-          </div>
-          <div className="project-body">
-            <span className="project-cat">{p.category}</span>
-            <h3>{p.title}</h3>
-            <p>{p.text}</p>
-            {p.metrics && (
-              <dl className="metrics">
-                {p.metrics.map((m) => (
-                  <div key={m.label}>
-                    <dt>{m.label}</dt>
-                    <dd>{m.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            )}
-            <div className="tags">
-              {p.tags.map((t) => (
-                <span key={t}>{t}</span>
-              ))}
-            </div>
-            {(p.link || p.github) && (
-              <div className="project-actions">
-                {p.link && (
-                  <a href={p.link} target="_blank" rel="noreferrer">
-                    {p.group === "client" ? "Visit website" : "View live"} <Icon name="ArrowUpRight" size={16} />
-                  </a>
-                )}
-                {p.github && (
-                  <a href={p.github} target="_blank" rel="noreferrer">
-                    <Icon name="Github" size={16} /> Source code
-                  </a>
-                )}
-              </div>
-            )}
-          </div>
+              <motion.span
+                className="project-icon"
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <Icon name={p.icon} size={44} />
+              </motion.span>
+            </>
+          )}
         </div>
-      </motion.div>
+
+        <div className="project-body">
+          <span className="project-cat">{p.category}</span>
+          <h3>{p.title}</h3>
+          <p>{p.text}</p>
+
+          {p.metrics && (
+            <dl className="metrics">
+              {p.metrics.map((m) => (
+                <div key={m.label}>
+                  <dt>{m.label}</dt>
+                  <dd>{m.value}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+
+          <div className="tags">
+            {p.tags.map((t) => (
+              <span key={t}>{t}</span>
+            ))}
+          </div>
+
+          {(p.link || p.github) && (
+            <div className="proj-links">
+              {p.link && (
+                <a href={p.link} target="_blank" rel="noreferrer">
+                  <Icon name={isNpm ? "Package" : "ExternalLink"} size={16} />
+                  {isNpm ? "View on npm" : "Visit website"}
+                </a>
+              )}
+              {p.github && (
+                <a href={p.github} target="_blank" rel="noreferrer">
+                  <Icon name="Github" size={16} /> Source code
+                </a>
+              )}
+            </div>
+          )}
+        </div>
+      </motion.article>
     </motion.div>
   );
 }
 
 export default function Projects() {
   const [filter, setFilter] = useState("all");
-  const shown = filter === "all" ? PROJECTS : PROJECTS.filter((p) => p.group === filter);
+  const list = filter === "all" ? PROJECTS : PROJECTS.filter((p) => p.group === filter);
 
   return (
     <section id="projects" className="section">
@@ -102,49 +123,50 @@ export default function Projects() {
         <SectionHead
           eyebrow="Our work"
           title="Projects we are proud of"
-          text="Websites and business systems for real clients, plus mobile apps and developer tools we built and open-sourced."
+          text="Client websites and business systems, mobile apps, and developer tools we have designed and built."
         />
 
-        <Reveal className="filters" y={16}>
-          <div role="tablist" aria-label="Filter projects">
-            {PROJECT_FILTERS.map((f) => (
-              <button
-                key={f.id}
-                role="tab"
-                aria-selected={filter === f.id}
-                className={filter === f.id ? "active" : ""}
-                onClick={() => setFilter(f.id)}
-              >
-                {f.label}
-              </button>
-            ))}
-          </div>
+        <Reveal className="filters" role="tablist" aria-label="Filter projects">
+          {PROJECT_FILTERS.map((f) => (
+            <button
+              key={f.id}
+              role="tab"
+              aria-selected={filter === f.id}
+              className={filter === f.id ? "active" : ""}
+              onClick={() => setFilter(f.id)}
+            >
+              {filter === f.id && <motion.span layoutId="filter-pill" className="filter-pill" />}
+              <span>{f.label}</span>
+            </button>
+          ))}
         </Reveal>
 
-        {/* key={filter} remounts the grid so the cards animate in again on each tab change */}
-        <div key={filter} className="cards-3 projects">
-          {shown.map((p, i) => (
-            <ProjectCard key={p.title} p={p} index={i} />
-          ))}
-        </div>
+        <motion.div layout className="cards-3 projects">
+          <AnimatePresence mode="popLayout">
+            {list.map((p) => (
+              <ProjectCard key={p.title} p={p} />
+            ))}
+          </AnimatePresence>
+        </motion.div>
 
         <div className="oss">
-          <Reveal className="oss-head" y={16}>
-            <h3>Open-source contributions</h3>
-            <p>Our code is part of libraries that React Native teams around the world use.</p>
+          <Reveal>
+            <h3 className="oss-title">
+              <Icon name="GitPullRequest" size={24} /> Open source contributions
+            </h3>
+            <p className="oss-sub">Pull requests to libraries other React Native teams depend on.</p>
           </Reveal>
-          <div className="cards-3">
+          <div className="oss-grid">
             {OPEN_SOURCE.map((o, i) => (
               <Reveal key={o.repo} delay={0.1 * i}>
                 <a className="oss-card" href={o.link} target="_blank" rel="noreferrer">
-                  <span className={`oss-status ${o.status === "In review" ? "wip" : ""}`}>
-                    <Icon name={STATUS_ICON[o.status]} size={14} /> {o.status}
+                  <span className={`status ${o.status.toLowerCase().replace(/\s/g, "-")}`}>
+                    <Icon name={o.status === "Merged" ? "GitMerge" : "GitPullRequest"} size={14} />
+                    {o.status}
                   </span>
                   <h4>{o.repo}</h4>
                   <p>{o.text}</p>
-                  <span className="oss-more">
-                    View on {o.link.includes("npmjs") ? "npm" : "GitHub"} <Icon name="ArrowUpRight" size={15} />
-                  </span>
+                  <Icon name="ArrowUpRight" size={20} className="oss-out" />
                 </a>
               </Reveal>
             ))}

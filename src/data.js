@@ -86,6 +86,7 @@ export const PROJECTS = [
     icon: "Landmark",
     category: "Corporate Website",
     title: "HVB Outsourcing",
+    video: "/projects/hvb.mp4",   
     text: "A professional website for a finance consulting firm offering fractional CFO, accounting advisory, audit preparation and tax support to growing businesses.",
     metrics: [
       { label: "Client type", value: "Finance consulting" },
